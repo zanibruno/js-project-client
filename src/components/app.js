@@ -18,6 +18,8 @@ class App {
 
 	initListeners() {
 		this.tripForm.addEventListener('submit', this.createTrip.bind(this))
+		this.countryBox.addEventListener('dblclick', this.editTrip.bind(this))
+		this.countryBox.addEventListener('blur', this.updateTrip.bind(this), true)
 		
 	}
 
@@ -40,6 +42,24 @@ class App {
 				this.renderTrips()
 			})
 		}
+
+		
+		editTrip(e) {
+			const trip = e.target 
+			trip.contentEditable = true 
+			trip.focus()
+		}
+
+		updateTrip(e) {
+			const trip = e.target
+			trip.contentEditable = false 
+			const country = trip.innerHTML
+			const id = trip.dataset.id
+			debugger
+			this.adapter.update(country, id)
+		}
+
+
 	
 		renderTrips() {
 			this.countryBox.innerHTML = this.trips.map(trip => trip.renderTripName()).join('')
