@@ -24,4 +24,19 @@ class TripsAdapter {
 	}
 
 
+	update(country, id) {
+		const trip = {
+		 country: country,
+		}
+		return fetch(`${this.baseURL}/${id}`, {
+			method: 'PATCH', 
+			headers: {
+				'content-type': 'application/json'
+			},
+			body: JSON.stringify(trip)
+		})
+			.then(res => res.json())
+	}
+
+
 }
