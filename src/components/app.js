@@ -20,6 +20,8 @@ class App {
 		this.tripForm.addEventListener('submit', this.createTrip.bind(this))
 		this.countryBox.addEventListener('dblclick', this.editTrip.bind(this))
 		this.countryBox.addEventListener('blur', this.updateTrip.bind(this), true)
+		this.countryBox.addEventListener('click', this.renderItems.bind(this))
+		// this.itemFormBox.addEventListener('submit'. this.createItem.bind(this))
 		
 	}
 
@@ -28,6 +30,8 @@ class App {
 		this.countryName = document.getElementById('trip-name')
 		this.countryBox = document.getElementById('trips-container')
 		this.tripForm = document.getElementById('trip-form')
+		this.itemFormBox = document.getElementById('item-form-box')
+		this.itemsBox = document.querySelector('.bottom')
 	}
 
 
@@ -55,7 +59,6 @@ class App {
 			trip.contentEditable = false 
 			const country = trip.innerHTML
 			const id = trip.dataset.id
-			debugger
 			this.adapter.update(country, id)
 		}
 
@@ -64,6 +67,33 @@ class App {
 		renderTrips() {
 			this.countryBox.innerHTML = this.trips.map(trip => trip.renderTripName()).join('')
 		}
+
+
+		// ITEMS ***********
+
+
+		renderItems(e) {
+		const countryId = e.target.dataset.id
+		this.itemFormBox.innerHTML = this.renderItemForm(countryId)
+		const items = this.trips.map(trip => trip.items.map(item => {
+			if (countryId == item.trip_id) {
+				return `<div class = "item-list" data-itemid="${item.id}" data-tripid="${countryId}><h4>${item.quantity}<br><button class="delete-btn">Delete</button></div>`
+			}
+		}))
+		this.itemsBox.innerHTML  = items.join('')
+		const item = document.querySlector('.bottom')
+		item.addEventListener('click', this.handleDelete.bind(this))
+			}
+
+
+			renderItemForm(countryId) {
+				return `<form data-countryId="${countryId}" id="item-form">
+        <input type="text" id="item-name" placeholder="Item" required>
+        <textarea type="text" id="item-quantity" placeholder="Quantity" required></textarea>
+        <input type="submit" value="Create">
+        </form>
+        `
+			}
 
 
 
