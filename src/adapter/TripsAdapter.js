@@ -1,7 +1,6 @@
 class TripsAdapter {
 	constructor() {
 		this.baseURL = 'http://localhost:3000/trips'
-	
 	}
 
 	getTrips() {
@@ -36,6 +35,39 @@ class TripsAdapter {
 			body: JSON.stringify(trip)
 		})
 			.then(res => res.json())
+	}
+
+
+
+
+	// ITEMS ************
+
+
+
+	createItems(name, quantity, id) {
+		const item = {
+			name: name,
+			quantity: quantity
+		}
+		return fetch(`${this.baseURL}/${id}/items`, {
+			method: 'POST',
+			headers: {
+				'content-type' : 'application/json'
+			},
+			body: JSON.stringify(item)
+		})
+		.then(res => res.json())
+	}
+
+
+
+	deleteItem(id) {
+		return fetch(`http://localhost:3000/items/${id}`, {
+			method: 'DELETE',
+			headers: {
+				'content-type' : 'application/json'
+			}
+		})
 	}
 
 
