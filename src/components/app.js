@@ -95,6 +95,47 @@ class App {
         `
 			}
 
+			createItem = (e) => {
+				e.preventDefault()
+				this.tripId = parseInt(e.target.dataset.countryid)
+				const name = document.getElementById('item-name').value
+				const quantity = document.getElementById('item-quantity').value
+				this.adapter.createItems(name, quantity, this.tripId)
+				.then(item => {
+					this.trips.find((trip) => trip.id === this.tripId).items.push(item)
+					this.renderNewItem(item)
+				})
+				document.getElementById('item-name').value = ''
+				document.getElementById('item-quantity').value = ''
+			}
+
+			renderNewItem(item) {
+				debugger
+				return this.itemsBox.innerHTML += `<div class="item-list" data-itemid="${item.id}" data-tripid="${item.trip_id}">
+				<h4>${item.name}</h4>${item.quantity}<br><button class="delete-btn">Delete</button></div>`
+			}
+
+
+
+			handleDelete(e) {
+				debugger
+				if(e.target && e.target.matches('button.delete-btn')) {
+					this.deleteItem(e)
+					e.stopPropagation()
+				}
+			}
+
+
+			deleteItem(e) {
+				this.itemId = parseInt(e.target.parentElement.dataset.itemid)
+				this.adapter.deleteItem(this.itemId)
+				const tripId = parseInt(e.target.parentElement.dataset.tripid)
+				const trip = this.trips.find((trip) => trip.id === tripId)
+				debugger
+				e.target.parentElement.remove()
+				trip.item = trip.items.filter((item) => item.id !== this.itemId)
+			}
+
 
 
 	
