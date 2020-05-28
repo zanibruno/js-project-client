@@ -6,7 +6,7 @@ class Trip {
 	}
 
 	renderTripName() {
-		return `<li class='trip-name' data-id='${this.id}'>${this.country}</li>`
+		return `<li class='trip-name' data-id='${this.id}' data-name='${this.country}'>${this.country}</li>`
 	}
 
 
