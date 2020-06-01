@@ -22,17 +22,21 @@ class App {
 		this.countryBox.addEventListener('blur', this.updateTrip.bind(this), true)
 		this.countryBox.addEventListener('click', this.renderItems.bind(this))
 		this.itemFormBox.addEventListener('submit', this.createItem.bind(this))
+		this.sortButton.addEventListener('click', this.sortTrip.bind(this))
 		this.itemsBox.addEventListener('submit', this.handleDelete.bind(this))
+		
 		
 	}
 
 
 	domElements() {
-		this.countryName = document.getElementById('trip-name')
+		this.tripName = document.getElementById('trip-name')
+		this.countryName = document.getElementById('trip-country')
 		this.countryBox = document.getElementById('trips-container')
 		this.tripForm = document.getElementById('trip-form')
 		this.itemFormBox = document.getElementById('item-form-box')
 		this.itemsBox = document.querySelector('.bottom')
+		this.sortButton = document.getElementById('sort-btn')
 	}
 
 
@@ -40,10 +44,11 @@ class App {
 
 		createTrip(e) {
 			e.preventDefault()
-			const country = this.countryName.value
+			const country = this.tripName.value
+			debugger
 			this.adapter.create(country)
 			.then(trip => { this.trips.push(new Trip(trip))
-				this.countryName.value = ''
+				this.tripName.value = ''
 				this.renderTrips()
 			})
 		}
@@ -63,17 +68,45 @@ class App {
 			this.adapter.update(country, id)
 		}
 
+		sortTrip() {
+		
+			const tripIdList = this.trips.map(tripid => tripid.id)
+			let sortList = this.trips.map(trip =>   trip.country ).sort()
+			this.countryBox.innerHTML = sortList.map(trip => `<li class='trip-name' data-id='${trip.id}' data-name='${trip}'>${trip}</li>`).join('')
+		debugger 
+				}
+
+		 renderTrips() {
+		 	return (
+			this.countryBox.innerHTML = this.trips.map(trip => trip.renderTripName()).join('')
+			)
+		}
+	
+
+
 
 	
-		renderTrips() {
-			this.countryBox.innerHTML = this.trips.map(trip => trip.renderTripName()).join('')
-		}
 
+				
+	
+
+
+
+	
+
+		
 
 		// ITEMS ***********
 
+			renderItemForm(countryId, countryName) {
+				return `<form data-countryId="${countryId}" id="item-form">
+        <input type="text" id="item-name" placeholder="${countryName}" required>
+        <textarea type="text" id="item-quantity" placeholder="Quantity" required></textarea>
+        <input type="submit" value="Create">
+        </form>`
+			}
 
-		renderItems(e) {
+			renderItems(e) {
 			
 			const countryName = e.target.dataset.name
 		const countryId = e.target.dataset.id
@@ -84,19 +117,12 @@ class App {
 				<h4>${item.name}</h4>${item.quantity}<br><button class="delete-btn">Delete</button></div>`
 			}
 		}))
-		this.itemsBox.innerHTML  = items.join('')
+		this.itemsBox.innerHTML  = items.join(' ')
 		const item = document.querySelector('.bottom')
 		item.addEventListener('click', this.handleDelete.bind(this))
+
 			}
 
-
-			renderItemForm(countryId, countryName) {
-				return `<h2>${countryName}</h2><form data-countryId="${countryId}" id="item-form">
-        <input type="text" id="item-name" placeholder="Item" required>
-        <textarea type="text" id="item-quantity" placeholder="Quantity" required></textarea>
-        <input type="submit" value="Create">
-        </form>`
-			}
 
 			createItem = (e) => {
 				e.preventDefault()
@@ -105,19 +131,24 @@ class App {
 				const quantity = document.getElementById('item-quantity').value
 				this.adapter.createItems(name, quantity, this.tripId)
 				.then(item => {
-					// debugger
 					this.trips.find((trip) => trip.id === this.tripId).items.push(item)
+					debugger
 					this.renderNewItem(item)
 				})
 				document.getElementById('item-name').value = ''
 				document.getElementById('item-quantity').value = ''
 			}
 
+
+
 			renderNewItem(item) {
-				// debugger
+				debugger	
 				return this.itemsBox.innerHTML += `<div class="item-list" data-itemid="${item.id}" data-tripid="${item.trip_id}">
 				<h4>${item.name}</h4>${item.quantity}<br><button class="delete-btn">Delete</button></div>`
 			}
+
+
+
 
 
 
@@ -125,7 +156,7 @@ class App {
 				// debugger
 				if(e.target && e.target.matches('button.delete-btn')) {
 					this.deleteItem(e)
-					e.stopPropagation()
+					// e.stopPropagation()
 				}
 			}
 
@@ -136,7 +167,8 @@ class App {
 				const tripId = parseInt(e.target.parentElement.dataset.tripid)
 				const trip = this.trips.find((trip) => trip.id === tripId)
 				e.target.parentElement.remove()
-				trip.item = trip.items.filter((item) => item.id !== this.itemId)
+				trip.items = trip.items.filter((item) => item.id !== this.itemId)
+
 			}
 
 
