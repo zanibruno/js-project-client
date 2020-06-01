@@ -38,6 +38,16 @@ class TripsAdapter {
 	}
 
 
+	// delete() {
+	// 	return fetch(`${this.baseURL}/${id}`, {
+	// 		method: 'DELETE',
+	// 		headers: {
+	// 			'content-type' : 'application/json'
+	// 		}
+	// 	})
+	// }
+
+
 
 
 	// ITEMS ************
@@ -45,7 +55,8 @@ class TripsAdapter {
 
 
 	createItems(name, quantity, id) {
-		const item = {
+		const itemName = {
+			id: id,
 			name: name,
 			quantity: quantity
 		}
@@ -54,9 +65,10 @@ class TripsAdapter {
 			headers: {
 				'content-type' : 'application/json'
 			},
-			body: JSON.stringify(item)
+			body: JSON.stringify(itemName)
 		})
 		.then(res => res.json())
+		.then(item => new Item(item))
 	}
 
 
