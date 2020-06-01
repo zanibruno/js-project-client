@@ -75,6 +75,11 @@ h1 {
 	transition: .5s ease, .5s ease
 }
 
+#sort-btn {
+	margin-left: 36.5%;
+	text-align: center;
+	border-radius: 8px;
+}
 
 
 /* RIGHT SIDE */
